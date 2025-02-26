@@ -31,6 +31,10 @@
         "CMAKE_INCLUDE_PATH": "${sourceParentDir}/lib/linux/include",
         "CMAKE_LIBRARY_PATH": "${sourceParentDir}/lib/linux"
       }
+    },
+    {
+      "inherits":"base",
+      "name":"windows-release"
     }
   ],
   "buildPresets": [
