@@ -1,6 +1,10 @@
 {
-  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
   "dependencies": [
-    "imgui"
+    "sdl3",
+    "vulkan",
+    "vulkan-utility-libraries",
+    "mimalloc",
+    "glad",
+    "opengl"
   ]
 }

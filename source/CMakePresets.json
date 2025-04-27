@@ -33,14 +33,35 @@
       }
     },
     {
-      "inherits":"base",
-      "name":"windows-release"
+      "inherits": "base",
+      "name": "windows-release"
+    },
+    {
+      "inherits": "base",
+      "name": "linux-test",
+      "displayName": "Linux x64",
+      "binaryDir": "${sourceParentDir}/build/linux-release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++",
+        "VCPKG_TARGET_TRIPLET": "x64-linux-mixed",
+        "CMAKE_INCLUDE_PATH": "${sourceParentDir}/lib/linux/include",
+        "CMAKE_LIBRARY_PATH": "${sourceParentDir}/lib/linux",
+        "TESTING": "ON"
+      }
     }
   ],
   "buildPresets": [
     {
       "name": "linux-build",
       "configurePreset": "linux-release",
+      "configuration": "RelWithDebInfo",
+      "jobs": 4
+    },
+    {
+      "name": "linux-test",
+      "configurePreset": "linux-test",
       "configuration": "RelWithDebInfo",
       "jobs": 4
     }
