@@ -38,8 +38,11 @@ if(SINT_WITH_GUI)
 endif()
 
 # Base
+set(SINT_BASE_INCLUDES ${PROJECT_SOURCE_DIR}/base)
 add_subdirectory(base)
+
 # Application
+set(SINT_APPLICATION_INCLUDES ${PROJECT_SOURCE_DIR}/application)
 add_subdirectory(application)
 
 # Test.
@@ -47,6 +50,3 @@ option(TESTING "Build Tests" OFF)
 if(TESTING)
   add_subdirectory(test)
 endif()
-
-# INCLUDES
-set(BASE_INCLUDES ${PROJECT_SOURCE_DIR}/base)

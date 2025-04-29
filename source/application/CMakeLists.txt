@@ -1,5 +1,4 @@
-set(application_HEADERS Application.hpp)
-
-set(application_SOURCES Application.cpp)
+file(GLOB application_HEADERS "*.hpp")
+file(GLOB application_SOURCES "*.cpp")
 
 add_library(application OBJECT ${application_SOURCES})

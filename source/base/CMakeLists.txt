@@ -1,5 +1,4 @@
-set(base_HEADERS IO.hpp)
+file(GLOB base_HEADERS "*.hpp")
+file(GLOB base_SOURCES "*.cpp")
 
-set(base_SOURCES IO.cpp)
-
-add_library(base OBJECT ${base_SOURCES})
+add_library(base OBJECT ${base_SOURCES} ${base_HEADERS})

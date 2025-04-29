@@ -1,3 +1,5 @@
+#include "Logger.hpp"
+
 #define SDL_MAIN_USE_CALLBACKS 1 /* use the callbacks instead of main() */
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
@@ -31,9 +33,9 @@ static float point_speeds[NUM_POINTS];
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
   int i;
 
-  SDL_SetAppMetadata("Example Renderer Points", "1.0",
-                     "com.example.renderer-points");
-
+  /* SDL_SetAppMetadata("Example Renderer Points", "1.0",
+                      "com.example.renderer-points");
+ */
   if (!SDL_Init(SDL_INIT_VIDEO)) {
     SDL_Log("Couldn't initialize SDL: %s", SDL_GetError());
     return SDL_APP_FAILURE;
@@ -55,6 +57,9 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
   }
 
   last_time = SDL_GetTicks();
+
+  Sint::Logger::info("ssssss");
+  Sint::Logger::info("ssssss");
 
   return SDL_APP_CONTINUE; /* carry on with the program! */
 }

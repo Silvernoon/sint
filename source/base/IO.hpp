@@ -1,8 +1,7 @@
-#ifndef UTILS_IO_H
-#define UTILS_IO_H
+#pragma once
 
-#include <string>
-namespace Utils {
-std::string LoadFile(const char *path);
-}
-#endif // UTILS_IO_H
+#include <fstream>
+
+namespace Sint {
+using OutputFile = std::ofstream;
+} // namespace Sint
