@@ -58,8 +58,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
 
   last_time = SDL_GetTicks();
 
-  Sint::Logger::info("ssssss");
-  Sint::Logger::info("ssssss");
+  Sint::Logger::info("Test");
 
   return SDL_APP_CONTINUE; /* carry on with the program! */
 }
