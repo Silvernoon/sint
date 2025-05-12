@@ -37,6 +37,9 @@ if(SINT_WITH_GUI)
   endif(VULKAN)
 endif()
 
+# Set Output dir
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../dist)
+
 # Base
 set(SINT_BASE_INCLUDES ${PROJECT_SOURCE_DIR}/base)
 add_subdirectory(base)

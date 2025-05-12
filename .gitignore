@@ -4,3 +4,4 @@ o/
 source/compile_commands.json
 !.gitignore
 layout.sh
+dist/*
