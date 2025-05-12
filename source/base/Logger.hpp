@@ -6,7 +6,7 @@
 
 namespace Sint {
 
-enum class LogLevel { Debug, Info, Warn, Error, Fatal };
+enum class LogLevel { Info, Debug, Warn, Error };
 
 /**
  * A sink for Logger messages.
@@ -14,6 +14,11 @@ enum class LogLevel { Debug, Info, Warn, Error, Fatal };
 class LogSink {
 public:
   virtual void log(LogLevel level, StringView msg) = 0;
+};
+
+class StdLogSink : public LogSink {
+public:
+  virtual void log(LogLevel level, StringView msg) override;
 };
 
 class FileLogSink : public LogSink {
@@ -53,9 +58,8 @@ void Logger::logf(LogLevel level, StringView msg, Args const &...args) {
   MutexLocker locker(s_mutex);
   String out = strf(msg, args...);
 
-  for (LogSink *v : s_sink) {
+  for (LogSink *v : s_sink)
     v->log(level, out);
-  }
 }
 
 template <typename... Args>
