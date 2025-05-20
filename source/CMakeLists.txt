@@ -37,6 +37,8 @@ if(SINT_WITH_GUI)
   endif(VULKAN)
 endif()
 
+find_library(MONO_LIBRARY mono-2.0 PATHS /usr/lib /usr/local/lib)
+
 # Set Output dir
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../dist)
 
@@ -47,6 +49,9 @@ add_subdirectory(base)
 # Application
 set(SINT_APPLICATION_INCLUDES ${PROJECT_SOURCE_DIR}/application)
 add_subdirectory(application)
+
+# Mono
+add_subdirectory(mono)
 
 # Test.
 option(TESTING "Build Tests" OFF)
