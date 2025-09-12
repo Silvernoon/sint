@@ -20,9 +20,9 @@
     },
     {
       "inherits": "base",
-      "name": "linux-release",
+      "name": "linux-release-clang",
       "displayName": "Linux x64",
-      "binaryDir": "${sourceParentDir}/build/linux-release",
+      "binaryDir": "${sourceParentDir}/build/linux-release-clang",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "RelWithDebInfo",
         "CMAKE_C_COMPILER": "clang",
@@ -40,7 +40,7 @@
       "inherits": "base",
       "name": "linux-test",
       "displayName": "Linux x64",
-      "binaryDir": "${sourceParentDir}/build/linux-release",
+      "binaryDir": "${sourceParentDir}/build/linux-release-clang",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "RelWithDebInfo",
         "CMAKE_C_COMPILER": "clang",
@@ -54,8 +54,8 @@
   ],
   "buildPresets": [
     {
-      "name": "linux-build",
-      "configurePreset": "linux-release",
+      "name": "linux-release-clang",
+      "configurePreset": "linux-release-clang",
       "configuration": "RelWithDebInfo",
       "jobs": 4
     },

@@ -21,7 +21,7 @@ if(SINT_WITH_GUI)
   find_package(SDL3 CONFIG REQUIRED)
 
   # OpenGL
-  option(OPENGL "Use OpenGL" ON)
+  option(OPENGL "Use OpenGL" OFF)
   if(OPENGL)
     find_package(glad CONFIG REQUIRED)
     set(OpenGL_GL_PREFERENCE "LEGACY")
@@ -31,6 +31,7 @@ if(SINT_WITH_GUI)
   endif()
 
   # Vulkan
+  option(VULKAN "Use Vulkan" ON)
   if(VULKAN)
     find_package(Vulkan REQUIRED)
     find_package(VulkanUtilityLibraries CONFIG REQUIRED)
@@ -50,8 +51,12 @@ add_subdirectory(base)
 set(SINT_APPLICATION_INCLUDES ${PROJECT_SOURCE_DIR}/application)
 add_subdirectory(application)
 
+# Client
+add_subdirectory(client)
+
+
 # Mono
-add_subdirectory(mono)
+#add_subdirectory(mono)
 
 # Test.
 option(TESTING "Build Tests" OFF)

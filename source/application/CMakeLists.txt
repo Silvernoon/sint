@@ -1,3 +1,5 @@
+include_directories(${SINT_BASE_INCLUDES})
+
 file(GLOB application_HEADERS "*.hpp")
 file(GLOB application_SOURCES "*.cpp")
 
