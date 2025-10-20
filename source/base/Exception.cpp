@@ -3,7 +3,13 @@
 
 void fatalError(char const *message, bool showStackTrace) {
   if (showStackTrace)
-    else Logger::error("Fatal Error: {}", message);
+#ifdef STAR_USE_CPPTRACE
+    Logger::error("Fatal Error: {}\n{}", message, captureBacktrace());
+#else
+    Logger::error("Fatal Error: {}\n{}", message, outputStack(captureStack()));
+#endif
+  else
+    Logger::error("Fatal Error: {}", message);
 
   std::abort();
 }

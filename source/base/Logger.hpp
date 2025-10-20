@@ -1,84 +1,106 @@
 #pragma once
-#include "IO.hpp"
 #include "Set.hpp"
 #include "String.hpp"
 #include "Thread.hpp"
+#include <fstream>
+#include <memory>
+#include <string>
+#include <string_view>
 
 namespace Sint {
 
-enum class LogLevel { Info, Debug, Warn, Error };
+enum class LogLevel { Debug, Info, Warn, Error };
+
+CLASS_Ptr(LogSink);
 
 /**
  * A sink for Logger messages.
  */
 class LogSink {
 public:
-  virtual void log(LogLevel level, StringView msg) = 0;
+  LogSink();
+  virtual ~LogSink() = default;
+
+  virtual void log(LogLevel level, std::string_view msg) = 0;
+
+  LogLevel level();
+  void setLevel(LogLevel);
+
+private:
+  Atomic<LogLevel> m_level;
 };
 
-class StdLogSink : public LogSink {
+class StdoutLogSink : public LogSink {
 public:
-  virtual void log(LogLevel level, StringView msg) override;
+  virtual void log(LogLevel level, std::string_view msg) override;
+
+private:
+  Mutex m_mutex;
 };
 
 class FileLogSink : public LogSink {
-  OutputFile m_output;
-
 public:
-  FileLogSink(StringView name, bool trunc = false);
+  FileLogSink(std::string_view name, LogLevel level, bool trunc = false);
 
-  virtual void log(LogLevel level, StringView msg) override;
+  virtual void log(LogLevel level, std::string_view msg) override;
+
+private:
+  std::ofstream m_output;
+  Mutex m_mutex;
 };
 
 class Logger {
-  static Mutex s_mutex;
-  static HashSet<LogSink *> s_sink;
-
-  template <typename... Args>
-  static void logf(LogLevel level, StringView msg, Args const &...args);
-
 public:
-  template <typename... Args>
-  static void info(StringView msg, Args const &...args);
+  static void addSink(LogSinkPtr);
+  static void removeSink(LogSinkPtr);
+
+  // Default LogSink that outputs to stdout.
+  static LogSinkPtr stdoutSink();
 
   template <typename... Args>
-  static void debug(StringView msg, Args const &...args);
-
+  static void debug(std::string_view msg, Args const &...args);
   template <typename... Args>
-  static void warn(StringView msg, Args const &...args);
-
+  static void info(std::string_view msg, Args const &...args);
   template <typename... Args>
-  static void error(StringView msg, Args const &...args);
+  static void warn(std::string_view msg, Args const &...args);
+  template <typename... Args>
+  static void error(std::string_view msg, Args const &...args);
 
-  static void addSink(LogSink *sink);
+private:
+  template <typename... Args>
+  static void logf(LogLevel level, std::string_view msg, Args const &...args);
+
+  static std::shared_ptr<StdoutLogSink> s_stdoutSink;
+  static HashSet<LogSinkPtr> s_sinks;
+  static Mutex s_mutex;
 };
 
 template <typename... Args>
-void Logger::logf(LogLevel level, StringView msg, Args const &...args) {
+void Logger::logf(LogLevel level, std::string_view msg, Args const &...args) {
+  std::string out = strf(msg, args...);
   MutexLocker locker(s_mutex);
-  String out = strf(msg, args...);
-
-  for (LogSink *v : s_sink)
-    v->log(level, out);
+  for (auto const &v : s_sinks)
+    if (v->level() <= level)
+      v->log(level, out);
 }
 
 template <typename... Args>
-void Logger::info(StringView msg, Args const &...args) {
+void Logger::info(std::string_view msg, Args const &...args) {
   logf(LogLevel::Info, msg, args...);
 }
 
 template <typename... Args>
-void Logger::debug(StringView msg, Args const &...args) {
+void Logger::debug(std::string_view msg, Args const &...args) {
   logf(LogLevel::Debug, msg, args...);
 }
 
 template <typename... Args>
-void Logger::warn(StringView msg, Args const &...args) {
+void Logger::warn(std::string_view msg, Args const &...args) {
   logf(LogLevel::Warn, msg, args...);
 }
 
 template <typename... Args>
-void Logger::error(StringView msg, Args const &...args) {
+void Logger::error(std::string_view msg, Args const &...args) {
   logf(LogLevel::Error, msg, args...);
 }
 

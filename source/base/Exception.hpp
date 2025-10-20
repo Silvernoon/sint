@@ -1,14 +1,13 @@
-#include "String.hpp"
+#pragma once
 #include <exception>
+#include <format>
 #include <functional>
-
-using std::function;
 
 namespace Sint {
 class Exception : public std::exception {
 public:
   template <typename... Args>
-  static Exception format(StringView str, Args const &...args);
+  static Exception format(std::string_view str, Args const &...args);
 
   Exception() noexcept;
   virtual ~Exception() noexcept;
@@ -19,8 +18,9 @@ public:
 
   virtual char const *what() const noexcept override;
 
-  // If the given exception is really StarException, then this will call
-  // StarException::printException, otherwise just prints std::exception::what.
+  // If the given exception is really Exception,
+  // then this will call Exception::printException,
+  // otherwise just prints std::exception::what.
   friend void printException(std::ostream &os, std::exception const &e,
                              bool fullStacktrace);
   friend std::string printException(std::exception const &e,
@@ -39,7 +39,7 @@ private:
   // Takes the ostream to print to, whether to print the full stacktrace.  Must
   // not bind 'this', may outlive the exception in the case of chained
   // exception causes.
-  function<void(std::ostream &, bool)> m_printException;
+  std::function<void(std::ostream &, bool)> m_printException;
 
   // m_printException will be called without the stack-trace to print
   // m_whatBuffer, if the what() method is invoked.
@@ -53,8 +53,8 @@ std::string printException(std::exception const &e, bool fullStacktrace);
 
 void printStack(char const *message);
 
-// Log error and stack-trace and possibly show a dialog box if available, then
-// abort.
+// Log error and stack-trace and possibly show a dialog box if available,
+// then abort.
 void fatalError(char const *message, bool showStackTrace);
 void fatalException(std::exception const &e, bool showStackTrace);
 
@@ -62,8 +62,8 @@ void fatalException(std::exception const &e, bool showStackTrace);
   class ClassName : public BaseName {                                          \
   public:                                                                      \
     template <typename... Args>                                                \
-    static ClassName format(StringView str, Args const &...args) {             \
-      return ClassName(strf(str, args...));                                    \
+    static ClassName format(std::string_view str, Args const &...args) {       \
+      return ClassName(std::format(str, args...));                             \
     }                                                                          \
     ClassName() : BaseName(#ClassName, std::string()) {}                       \
     explicit ClassName(std::string message, bool genStackTrace = true)         \
@@ -83,8 +83,8 @@ void fatalException(std::exception const &e, bool showStackTrace);
   }
 
 template <typename... Args>
-Exception Exception::format(StringView str, Args const &...args) {
-  return Exception(strf(str, args...));
+Exception Exception::format(std::string_view str, Args const &...args) {
+  return Exception(std::format(str, args...));
 }
 
 } // namespace Sint

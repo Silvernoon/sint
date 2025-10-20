@@ -1,40 +1,60 @@
 #include "Logger.hpp"
 #include "Enum.hpp"
-#include "IO.hpp"
+#include "Format.hpp"
 #include "Set.hpp"
-#include "String.hpp"
 #include "Thread.hpp"
 #include "Time.hpp"
+#include <fstream>
 #include <iostream>
+#include <memory>
 
 namespace Sint {
 
-ENUM_NAMES(LogLevel, "Info", "Debug", "Warn", "Error");
+ENUM_NAMES(LogLevel, "Debug", "Info", "Warn", "Error");
 
-inline String logf(LogLevel level, StringView msg) {
-  return strf("[{}] [{}] {}", Time::printCurrentTime(), to_string(level), msg);
-}
+LogSink::LogSink() : m_level(LogLevel::Info) {}
 
-void StdLogSink::log(LogLevel level, StringView msg) {
-  std::cout << logf(level, msg) << std::endl;
+LogLevel LogSink::level() { return m_level; }
+
+void LogSink::setLevel(LogLevel level) { m_level = level; }
+
+void StdoutLogSink::log(LogLevel level, std::string_view msg) {
+  MutexLocker lock(m_mutex);
+  std::cout << strf("[{}] {}", to_string(level), msg) << std::endl;
   std::cout.flush();
 }
 
-FileLogSink::FileLogSink(StringView name, bool trunc) {
-  m_output = OutputFile(
+FileLogSink::FileLogSink(std::string_view name, LogLevel level, bool trunc) {
+  m_output = std::ofstream(
       name.data(),
-      std::ios::out |
+      std::ios::app |
           (trunc ? std::ios::trunc : static_cast<std::ios_base::openmode>(0)));
 }
 
-void FileLogSink::log(LogLevel level, StringView msg) {
-  m_output << logf(level, msg) << std::endl;
+void FileLogSink::log(LogLevel level, std::string_view msg) {
+  MutexLocker lock(m_mutex);
+  m_output << strf("[{}] [{}] {}", Time::printCurrentTime(), to_string(level),
+                   msg)
+           << std::endl;
 }
 
-void Logger::addSink(LogSink *sink) { s_sink.insert(sink); }
+void Logger::addSink(LogSinkPtr s) {
+  MutexLocker locker(s_mutex);
+  s_sinks.insert(s);
+}
 
+void Logger::removeSink(LogSinkPtr s) {
+  MutexLocker locker(s_mutex);
+  s_sinks.erase(s);
+}
+
+LogSinkPtr Logger::stdoutSink() { return s_stdoutSink; }
+
+std::shared_ptr<StdoutLogSink> Logger::s_stdoutSink =
+    std::make_shared<StdoutLogSink>();
+HashSet<LogSinkPtr> Logger::s_sinks = {
+    std::make_shared<StdoutLogSink>(),
+    std::make_shared<FileLogSink>("sint.log", LogLevel::Info)};
 Mutex Logger::s_mutex;
-HashSet<LogSink *> Logger::s_sink = {new FileLogSink("sint.log"),
-                                     new StdLogSink};
 
 } // namespace Sint

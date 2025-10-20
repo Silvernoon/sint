@@ -1,9 +1,9 @@
 #pragma once
-#include "String.hpp"
+#include <string>
 
 namespace Sint {
 class Time {
 public:
-  static String printCurrentTime();
+  static std::string printCurrentTime();
 };
 } // namespace Sint
