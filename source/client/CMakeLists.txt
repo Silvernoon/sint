@@ -1,5 +1,6 @@
 include_directories(
   ${SINT_BASE_INCLUDES}
+  ${SINT_CORE_INCLUDES}
   ${SINT_APPLICATION_INCLUDES}
 )
 

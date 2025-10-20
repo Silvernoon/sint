@@ -43,9 +43,14 @@ find_library(MONO_LIBRARY mono-2.0 PATHS /usr/lib /usr/local/lib)
 # Set Output dir
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../dist)
 
-# Base
+# Base - Wrapper of std etc
 set(SINT_BASE_INCLUDES ${PROJECT_SOURCE_DIR}/base)
 add_subdirectory(base)
+
+# Core
+set(SINT_CORE_INCLUDES ${PROJECT_SOURCE_DIR}/core)
+add_subdirectory(core)
+
 
 # Application
 set(SINT_APPLICATION_INCLUDES ${PROJECT_SOURCE_DIR}/application)

@@ -1,4 +1,4 @@
-include_directories(${SINT_BASE_INCLUDES})
+include_directories(${SINT_BASE_INCLUDES} ${SINT_CORE_INCLUDES})
 
 file(GLOB application_HEADERS "*.hpp")
 file(GLOB application_SOURCES "*.cpp")
